@@ -5,6 +5,8 @@ import 'package:latres/model/restaurant.dart';
 import 'package:latres/components/navbar.dart';
 import 'package:latres/service/base_network.dart';
 import 'detail.dart';
+// ...existing import...
+import 'package:latres/pages/favorite.dart'; // Jika ada halaman rekomendasi
 
 class DashboardPage extends StatelessWidget {
   const DashboardPage({super.key});
@@ -37,8 +39,46 @@ class DashboardPage extends StatelessWidget {
         final username = snapshot.data ?? 'User';
         return Scaffold(
           appBar: Navbar(
-            username: snapshot.data ?? "User",
-            onMenu: () => _logout(context),
+            username: username,
+            onBack: () {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const LoginPage()),
+              );
+            },
+          ),
+          endDrawer: Drawer(
+            child: ListView(
+              padding: EdgeInsets.zero,
+              children: [
+                DrawerHeader(
+                  decoration: const BoxDecoration(color: Colors.purple),
+                  child: const Text(
+                    'Menu',
+                    style: TextStyle(color: Colors.white, fontSize: 24),
+                  ),
+                ),
+                ListTile(
+                  leading: const Icon(Icons.star),
+                  title: const Text('Rekomendasi'),
+                  onTap: () {
+                    Navigator.pop(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const Favorite()),
+                    );
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.logout),
+                  title: const Text('Logout'),
+                  onTap: () {
+                    Navigator.pop(context);
+                    _logout(context);
+                  },
+                ),
+              ],
+            ),
           ),
           body: Column(
             children: [
@@ -57,8 +97,7 @@ class DashboardPage extends StatelessWidget {
                       itemCount: restaurants.length,
                       itemBuilder: (context, index) {
                         final restaurant = restaurants[index];
-                        return // Contoh widget untuk satu kartu restoran
-                        Card(
+                        return Card(
                           margin: const EdgeInsets.symmetric(
                             vertical: 8,
                             horizontal: 16,
@@ -93,7 +132,6 @@ class DashboardPage extends StatelessWidget {
                                   ),
                                 ),
                                 const SizedBox(height: 8),
-                                // ...existing code...
                                 Align(
                                   alignment: Alignment.bottomRight,
                                   child: IconButton(
@@ -111,7 +149,6 @@ class DashboardPage extends StatelessWidget {
                                     },
                                   ),
                                 ),
-                                // ...existing code...
                               ],
                             ),
                           ),

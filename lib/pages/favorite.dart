@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:latres/model/restaurant.dart';
 import 'package:latres/service/base_network.dart';
-import 'dashboard.dart';
+import 'detail.dart';
 
 class Favorite extends StatefulWidget {
   const Favorite({super.key});
@@ -29,11 +29,9 @@ class _FavoriteState extends State<Favorite> {
             .where((k) => k.startsWith('favorite_') && prefs.getBool(k) == true)
             .toList();
 
-    // Ambil data restoran dari API (atau cache lokal jika ada)
     final allRestaurants = await BaseNetwork.getAll('list');
     final all = allRestaurants.map((e) => Restaurant.fromJson(e)).toList();
 
-    // Filter restoran yang ada di favorite
     setState(() {
       favoriteRestaurants =
           all.where((r) => keys.contains('favorite_${r.id}')).toList();
@@ -73,6 +71,19 @@ class _FavoriteState extends State<Favorite> {
                       ),
                       subtitle: Text(
                         '${restaurant.city} • Rating: ${restaurant.rating}',
+                      ),
+                      trailing: IconButton(
+                        icon: const Icon(Icons.arrow_forward),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder:
+                                  (context) =>
+                                      DetailPage(restaurant: restaurant),
+                            ),
+                          );
+                        },
                       ),
                     ),
                   );

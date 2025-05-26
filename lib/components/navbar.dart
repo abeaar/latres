@@ -3,22 +3,40 @@ import 'package:flutter/material.dart';
 class Navbar extends StatelessWidget implements PreferredSizeWidget {
   final String username;
   final VoidCallback? onBack;
-  final VoidCallback? onMenu;
 
-  const Navbar({super.key, required this.username, this.onBack, this.onMenu});
+  const Navbar({super.key, required this.username, this.onBack});
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
       leading: IconButton(
-        icon: const Icon(Icons.arrow_back),
-        onPressed: onBack ?? () => Navigator.of(context).pop(),
+        icon: const Icon(Icons.arrow_back, color: Colors.black),
+        onPressed:
+            onBack ??
+            () {
+              Navigator.pushReplacementNamed(context, '/dashboard');
+            },
       ),
-      title: Text('Hai, $username'),
+      title: Text(
+        'Hai, $username',
+        style: const TextStyle(
+          color: Colors.black,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
       centerTitle: true,
-      actions: [IconButton(icon: const Icon(Icons.menu), onPressed: onMenu)],
       backgroundColor: const Color.fromARGB(221, 255, 255, 255),
       elevation: 0,
+      actions: [
+        Builder(
+          builder:
+              (context) => IconButton(
+                icon: const Icon(Icons.menu, color: Colors.black),
+                onPressed: () => Scaffold.of(context).openEndDrawer(),
+              ),
+        ),
+      ],
+      iconTheme: const IconThemeData(color: Colors.black),
     );
   }
 
