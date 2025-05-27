@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'pages/login.dart';
+import 'pages/dashboard.dart';
+import 'pages/favorite.dart';
 
 void main() {
   runApp(const MainApp());
@@ -10,9 +12,14 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-        debugShowCheckedModeBanner: false,
-      home : LoginPage()
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: const LoginPage(),
+      routes: {
+        '/login': (context) => const LoginPage(),
+        '/dashboard': (context) => const DashboardPage(),
+        '/favorite': (context) => const Favorite(),
+      },
     );
   }
 }
