@@ -14,37 +14,35 @@ class _RegistPageState extends State<RegistPage> {
   final _password = TextEditingController();
   bool _isObscure = true;
 
+  Future<void> _register() async {
+    if (_formKey.currentState!.validate()) {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      List<String> usernames = prefs.getStringList('usernames') ?? [];
+      List<String> passwords = prefs.getStringList('passwords') ?? [];
 
-Future<void> _register() async {
-  if (_formKey.currentState!.validate()) {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? registeredUsername = prefs.getString('registered_username');
+      if (usernames.contains(_username.text.trim())) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Username sudah terdaftar!')),
+        );
+        return;
+      }
 
-    // Cek apakah username sudah terdaftar
-    if (registeredUsername != null && registeredUsername == _username.text.trim()) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Username sudah terdaftar!')),
-      );
-      return;
+      usernames.add(_username.text.trim());
+      passwords.add(_password.text.trim());
+      await prefs.setStringList('usernames', usernames);
+      await prefs.setStringList('passwords', passwords);
+
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Registrasi berhasil!')));
+      Navigator.pop(context);
     }
-
-    // Jika belum terdaftar, simpan data
-    await prefs.setString('registered_username', _username.text.trim());
-    await prefs.setString('registered_password', _password.text.trim());
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Registrasi berhasil!')),
-    );
-    Navigator.pop(context); // Kembali ke halaman login
   }
-}
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Registrasi'),
-      ),
+      appBar: AppBar(title: const Text('Registrasi')),
       body: Padding(
         padding: const EdgeInsets.all(24.0),
         child: Form(
@@ -59,8 +57,11 @@ Future<void> _register() async {
                   border: OutlineInputBorder(),
                   prefixIcon: Icon(Icons.person),
                 ),
-                validator: (value) =>
-                    value == null || value.isEmpty ? 'Username wajib diisi' : null,
+                validator:
+                    (value) =>
+                        value == null || value.isEmpty
+                            ? 'Username wajib diisi'
+                            : null,
               ),
               const SizedBox(height: 16),
               TextFormField(
@@ -81,8 +82,11 @@ Future<void> _register() async {
                     },
                   ),
                 ),
-                validator: (value) =>
-                    value == null || value.isEmpty ? 'Password wajib diisi' : null,
+                validator:
+                    (value) =>
+                        value == null || value.isEmpty
+                            ? 'Password wajib diisi'
+                            : null,
               ),
               const SizedBox(height: 24),
               SizedBox(

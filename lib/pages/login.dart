@@ -34,15 +34,16 @@ class _LoginPageState extends State<LoginPage> {
   Future<void> _login() async {
     if (formkey.currentState!.validate()) {
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      String? registeredUsername = prefs.getString('registered_username');
-      String? registeredPassword = prefs.getString('registered_password');
+      List<String> usernames = prefs.getStringList('usernames') ?? [];
+      List<String> passwords = prefs.getStringList('passwords') ?? [];
 
-      // Cek apakah user sudah pernah registrasi
-      if ((registeredUsername != null && registeredPassword != null) &&
-          _username.text.trim() == registeredUsername &&
-          _password.text.trim() == registeredPassword) {
+      final inputUsername = _username.text.trim();
+      final inputPassword = _password.text.trim();
+
+      int idx = usernames.indexOf(inputUsername);
+      if (idx != -1 && passwords[idx] == inputPassword) {
         await prefs.setBool('isLogin', true);
-        await prefs.setString('username', _username.text.trim());
+        await prefs.setString('username', inputUsername);
 
         ScaffoldMessenger.of(
           context,
@@ -56,6 +57,7 @@ class _LoginPageState extends State<LoginPage> {
       }
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
